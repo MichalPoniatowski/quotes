@@ -1,24 +1,18 @@
-import senators from "./assets/data/senators.json";
+const API_URL = "https://dummyjson.com";
+const quoteEl = document.getElementById("quotes");
+const buttonEl = document.getElementById("button");
 
-const inputFilterEl = document.getElementById("filter");
+const getAllQuotes = () => fetch(`${API_URL}/quotes`).then((res) => res.json());
 
-const senatorsNames = senators.objects.map((senator) => senator.person.name);
-console.log(senatorsNames);
+buttonEl.addEventListener("click", (event) => {
+  function getRandomArbitrary(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+  }
 
-const buildSenatorsList = (data) => {
-  const senatorsEl = document.getElementById("senators");
-
-  const senatorsItems = data.map((item) => `<li>${item}</li>`);
-  senatorsEl.innerHTML = senatorsItems.join("");
-};
-
-buildSenatorsList(senatorsNames);
-
-inputFilterEl.addEventListener("input", (event) => {
-  const text = event.currentTarget.value;
-
-  const filteredNames = senatorsNames.filter((name) => {
-    return name.toLowerCase().includes(text.toLowerCase());
+  getAllQuotes().then((data) => {
+    const length = data.quotes.length;
+    const randomQuote = data.quotes[getRandomArbitrary(0, length)];
+    const quote = `${randomQuote.quote} - ${randomQuote.author}`;
+    quoteEl.innerText = `${quote}`;
   });
-  buildSenatorsList(filteredNames);
 });
